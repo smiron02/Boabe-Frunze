@@ -153,7 +153,7 @@ Site-ul va fi testat cu https://pagespeed.web.dev/. De la început:
 - [x] 6. Checkout, comenzi, stocuri
 - [x] 7. Promoții și factură
 - [x] 8. Plată Stripe în mod test
-- [ ] 9. Panou de administrare
+- [x] 9. Panou de administrare
 - [ ] 10. Quiz „Găsește-ți cafeaua"
 - [ ] 11. Optimizare PageSpeed, publicare, documentație cu print screen-uri
 

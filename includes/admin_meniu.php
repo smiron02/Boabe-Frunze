@@ -6,6 +6,9 @@ $paginiAdmin = [
     'index.php'      => 'Panou',
     'produse.php'    => 'Produse și stocuri',
     'categorii.php'  => 'Categorii',
+    'comenzi.php'    => 'Comenzi',
+    'utilizatori.php'=> 'Utilizatori',
+    'promotii.php'   => 'Promoții',
 ];
 $paginaAdmin = basename($_SERVER['SCRIPT_NAME']);
 // Formularul de produs ține de secțiunea „Produse”

@@ -44,17 +44,28 @@ function cereAutentificare(): array
 }
 
 /**
- * Doar pentru administratori. Rolul se verifică DIN BAZA DE DATE la fiecare
- * cerere (nu doar din sesiune): dacă un admin își pierde rolul, pierde
- * accesul imediat, fără să fie nevoie să se delogheze.
+ * true dacă utilizatorul autentificat este administrator. Rolul se verifică
+ * DIN BAZA DE DATE la fiecare cerere (nu doar din sesiune): dacă un admin își
+ * pierde rolul, pierde accesul imediat, fără să fie nevoie să se delogheze.
+ */
+function esteAdmin(): bool
+{
+    $utilizator = utilizatorCurent();
+    if (!$utilizator) {
+        return false;
+    }
+    $stmt = db()->prepare('SELECT rol FROM utilizatori WHERE id = :id');
+    $stmt->execute(['id' => $utilizator['id']]);
+    return $stmt->fetchColumn() === 'admin';
+}
+
+/**
+ * Doar pentru administratori: vizitator → login, client → 403.
  */
 function cereAdmin(): array
 {
     $utilizator = cereAutentificare();
-
-    $stmt = db()->prepare('SELECT rol FROM utilizatori WHERE id = :id');
-    $stmt->execute(['id' => $utilizator['id']]);
-    if ($stmt->fetchColumn() !== 'admin') {
+    if (!esteAdmin()) {
         http_response_code(403);
         $titluPagina = 'Acces interzis';
         require __DIR__ . '/header.php';

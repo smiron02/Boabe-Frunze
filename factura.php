@@ -11,7 +11,8 @@ require_once __DIR__ . '/includes/comenzi.php';
 $utilizator = cereAutentificare();
 
 $id = filter_input(INPUT_GET, 'comanda', FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
-$comanda = $id ? comandaUtilizator($id, $utilizator['id']) : null;   // doar comenzile proprii
+// Clientul își vede doar comenzile proprii; administratorul le vede pe toate
+$comanda = $id ? comandaUtilizator($id, esteAdmin() ? null : $utilizator['id']) : null;
 $factura = $comanda ? facturaComenzii($comanda['id']) : null;
 if (!$factura) {
     pagina404('Factura nu există. Factura se emite după confirmarea plății.');
@@ -25,7 +26,11 @@ require __DIR__ . '/includes/header.php';
 ?>
 
 <div class="fara-tiparire factura-actiuni">
-    <a href="<?= e(url('comanda.php?id=' . $comanda['id'])) ?>">← Înapoi la comandă</a>
+    <?php if ((int)$comanda['utilizator_id'] === (int)$utilizator['id']): ?>
+        <a href="<?= e(url('comanda.php?id=' . $comanda['id'])) ?>">← Înapoi la comandă</a>
+    <?php else: ?>
+        <a href="<?= e(url('admin/comenzi.php?id=' . $comanda['id'])) ?>">← Înapoi la comandă (administrare)</a>
+    <?php endif; ?>
     <button class="buton" type="button" data-tipareste>Tipărește / Salvează PDF</button>
 </div>
 

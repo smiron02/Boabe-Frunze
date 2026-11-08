@@ -208,17 +208,22 @@ function facturaComenzii(int $comandaId): ?array
 
 /**
  * O comandă a utilizatorului dat (sau null dacă nu există / nu e a lui),
- * împreună cu liniile ei.
+ * împreună cu liniile ei. Cu $utilizatorId = null (doar pentru administrator)
+ * se întoarce orice comandă.
  */
-function comandaUtilizator(int $comandaId, int $utilizatorId): ?array
+function comandaUtilizator(int $comandaId, ?int $utilizatorId): ?array
 {
-    $stmt = db()->prepare(
-        'SELECT c.*, u.nume AS client_nume, u.email AS client_email
-           FROM comenzi c
-           JOIN utilizatori u ON u.id = c.utilizator_id
-          WHERE c.id = :id AND c.utilizator_id = :u'
-    );
-    $stmt->execute(['id' => $comandaId, 'u' => $utilizatorId]);
+    $sql = 'SELECT c.*, u.nume AS client_nume, u.email AS client_email
+              FROM comenzi c
+              JOIN utilizatori u ON u.id = c.utilizator_id
+             WHERE c.id = :id';
+    $parametri = ['id' => $comandaId];
+    if ($utilizatorId !== null) {
+        $sql .= ' AND c.utilizator_id = :u';
+        $parametri['u'] = $utilizatorId;
+    }
+    $stmt = db()->prepare($sql);
+    $stmt->execute($parametri);
     $comanda = $stmt->fetch();
     if (!$comanda) {
         return null;

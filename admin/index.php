@@ -47,16 +47,16 @@ require __DIR__ . '/../includes/admin_meniu.php';
         <strong class="indicator__valoare"><?= e(formatPret((float)$luna['incasat'])) ?></strong>
         <span class="nota"><?= (int)$luna['nr'] ?> comenzi plătite</span>
     </div>
-    <div class="indicator">
+    <a class="indicator indicator--link" href="<?= e(url('admin/comenzi.php?status=platita')) ?>">
         <span class="indicator__eticheta">De expediat</span>
         <strong class="indicator__valoare"><?= $deExpediat ?></strong>
-        <span class="nota">comenzi plătite</span>
-    </div>
-    <div class="indicator">
+        <span class="nota">comenzi plătite →</span>
+    </a>
+    <a class="indicator indicator--link" href="<?= e(url('admin/comenzi.php?status=noua')) ?>">
         <span class="indicator__eticheta">Neplătite</span>
         <strong class="indicator__valoare"><?= $neplatite ?></strong>
-        <span class="nota">comenzi noi</span>
-    </div>
+        <span class="nota">comenzi noi →</span>
+    </a>
 </div>
 
 <section class="card">
