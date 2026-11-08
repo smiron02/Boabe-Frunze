@@ -170,7 +170,7 @@ require __DIR__ . '/includes/header.php';
             <span>Total (TVA inclus)</span>
             <strong><?= e(formatPret($cos['total'])) ?></strong>
         </p>
-        <p class="nota">Costul livrării și detalierea TVA apar la finalizarea comenzii.</p>
+        <p class="nota">Livrare gratuită. Detalierea TVA apare la finalizarea comenzii.</p>
 
         <?php if ($cos['probleme']): ?>
             <p class="mesaj mesaj--eroare">Rezolvă mai întâi problemele marcate în coș.</p>

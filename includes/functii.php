@@ -85,7 +85,8 @@ function continutCos(): array
     $iduri = array_keys($cos);
     $semne = implode(',', array_fill(0, count($iduri), '?'));
     $stmt = db()->prepare(
-        "SELECT p.id, p.nume, p.pret, p.gramaj, p.imagine, p.stoc, p.activ, c.nume AS categorie
+        "SELECT p.id, p.nume, p.pret, p.gramaj, p.imagine, p.stoc, p.activ,
+                c.nume AS categorie, c.cota_tva
            FROM produse p JOIN categorii c ON c.id = p.categorie_id
           WHERE p.id IN ($semne)"
     );
@@ -127,6 +128,19 @@ function continutCos(): array
     }
     $rezultat['total'] = round($rezultat['total'], 2);
     return $rezultat;
+}
+
+/**
+ * Textul afișat pentru fiecare status de comandă.
+ */
+function etichetaStatus(string $status): string
+{
+    return [
+        'noua'      => 'Nouă — în așteptarea plății',
+        'platita'   => 'Plătită',
+        'expediata' => 'Expediată',
+        'anulata'   => 'Anulată',
+    ][$status] ?? $status;
 }
 
 /**
