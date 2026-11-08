@@ -140,6 +140,57 @@ function verificaCsrf(): void
     }
 }
 
+// ---------------------------------------------------------------
+// Mesaje „flash”: se salvează în sesiune înainte de o redirecționare
+// și se afișează O SINGURĂ DATĂ pe pagina următoare (în header.php).
+// ---------------------------------------------------------------
+
+/** $tip: 'succes' sau 'eroare' */
+function seteazaFlash(string $tip, string $text): void
+{
+    pornesteSesiunea();
+    $_SESSION['flash'][] = ['tip' => $tip, 'text' => $text];
+}
+
+function afiseazaFlash(): string
+{
+    $html = '';
+    foreach ($_SESSION['flash'] ?? [] as $mesaj) {
+        $html .= '<p class="mesaj mesaj--' . e($mesaj['tip']) . '" role="status">' . e($mesaj['text']) . '</p>';
+    }
+    unset($_SESSION['flash']);   // după afișare, mesajele se șterg
+    return $html;
+}
+
+/**
+ * Redirecționează către o pagină din site și oprește scriptul.
+ * Folosit după orice POST reușit (modelul Post/Redirect/Get), ca
+ * reîncărcarea paginii (F5) să nu retrimită formularul.
+ */
+function redirectioneaza(string $cale): never
+{
+    header('Location: ' . url($cale));
+    exit;
+}
+
+/**
+ * Verifică dacă adresa de întoarcere (?retur=...) este o cale DIN SITE.
+ * Fără verificare, cineva ar putea trimite un link de tipul
+ * login.php?retur=https://site-fals.ro și ar redirecționa victima
+ * după autentificare („open redirect”).
+ */
+function returSigur(?string $retur): ?string
+{
+    if (!is_string($retur) || $retur === '') {
+        return null;
+    }
+    $baza = parse_url(URL_BAZA, PHP_URL_PATH) ?? '';   // ex.: „/ceai-cafea”
+    $valid = str_starts_with($retur, $baza . '/')        // începe cu folderul site-ului
+        && !str_starts_with($retur, '//')                // nu e „//alt-site.ro”
+        && !preg_match('/[\\\\\r\n]/', $retur);          // fără backslash / linii noi
+    return $valid ? $retur : null;
+}
+
 /**
  * Formatează un preț în stil românesc: 1234.5 → „1.234,50 RON”.
  */

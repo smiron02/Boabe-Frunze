@@ -71,7 +71,14 @@ $nrCos = numarProduseCos();
                         <li><a href="<?= e(url('admin/index.php')) ?>">Administrare</a></li>
                     <?php endif; ?>
                     <li><a href="<?= e(url('cont.php')) ?>"<?= activ('cont.php', $paginaCurenta) ?>>Contul meu</a></li>
-                    <li><a href="<?= e(url('logout.php')) ?>">Ieșire</a></li>
+                    <li>
+                        <!-- Deconectarea se face prin POST + CSRF: un simplu link (GET)
+                             ar putea fi declanșat de pe alt site (ex.: <img src=".../logout.php">) -->
+                        <form method="post" action="<?= e(url('logout.php')) ?>">
+                            <?= campCsrf() ?>
+                            <button type="submit" class="meniu__buton-link">Ieșire</button>
+                        </form>
+                    </li>
                 <?php else: ?>
                     <li><a href="<?= e(url('login.php')) ?>"<?= activ('login.php', $paginaCurenta) ?>>Autentificare</a></li>
                 <?php endif; ?>
@@ -87,3 +94,4 @@ $nrCos = numarProduseCos();
 </header>
 
 <main id="continut" class="container continut">
+<?= afiseazaFlash() ?>

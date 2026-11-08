@@ -274,3 +274,29 @@ h1, h2, h3 { line-height: 1.25; margin: 0 0 .6em; }
 .scala { display: inline-flex; gap: 4px; vertical-align: middle; }
 .scala__punct { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--culoare-primara); }
 .scala__punct--plin { background: var(--culoare-primara); }
+
+/* ---------- Formulare de cont (login / înregistrare) ---------- */
+.formular-card {
+    max-width: 440px; margin: 0 auto; padding: 28px 24px;
+    background: var(--culoare-suprafata); border: 1px solid var(--culoare-bordura);
+    border-radius: var(--raza); box-shadow: var(--umbra);
+}
+.formular-card h1 { font-size: 1.6rem; }
+.formular-card__alternativa { margin: 20px 0 0; text-align: center; }
+.buton--lat { width: 100%; }
+.camp input[aria-invalid="true"] { border-color: var(--culoare-reducere); }
+.camp__eroare { color: var(--culoare-reducere); font-size: .9rem; margin: 4px 0 0; }
+.card {
+    background: var(--culoare-suprafata); border: 1px solid var(--culoare-bordura);
+    border-radius: var(--raza); padding: 20px 24px; margin-bottom: 24px;
+}
+.card h2 { font-size: 1.2rem; }
+
+/* Butonul „Ieșire” din meniu arată ca un link (e formular POST, nu link) */
+.meniu__lista form { margin: 0; }
+.meniu__buton-link {
+    background: none; border: 0; font: inherit; color: var(--culoare-text); cursor: pointer;
+    padding: 10px 4px; width: 100%; text-align: left;
+}
+.meniu__buton-link:hover { color: var(--culoare-primara); }
+@media (min-width: 860px) { .meniu__buton-link { padding: 8px 12px; width: auto; } }
