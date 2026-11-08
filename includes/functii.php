@@ -92,6 +92,55 @@ function imagineProdus(?string $fisier): string
 }
 
 /**
+ * Afișează pagina „Nu a fost găsit” (cod HTTP 404) și oprește scriptul.
+ * Folosită când un produs/categorie nu există sau nu este activ.
+ */
+function pagina404(string $mesaj = 'Pagina căutată nu există.'): never
+{
+    http_response_code(404);
+    $titluPagina = 'Pagina nu a fost găsită';
+    require __DIR__ . '/header.php';
+    echo '<h1>Nu am găsit pagina</h1><p>' . e($mesaj) . '</p>';
+    echo '<p><a class="buton" href="' . e(url('catalog.php')) . '">Înapoi la catalog</a></p>';
+    require __DIR__ . '/footer.php';
+    exit;
+}
+
+// ---------------------------------------------------------------
+// Protecție CSRF (Cross-Site Request Forgery)
+// Fiecare formular care modifică date conține un token secret, generat
+// o dată pe sesiune. Un site străin nu poate cunoaște tokenul, deci nu
+// poate trimite formulare „în numele” utilizatorului.
+// ---------------------------------------------------------------
+
+/** Tokenul sesiunii curente (se generează la prima utilizare). */
+function csrfToken(): string
+{
+    pornesteSesiunea();
+    if (empty($_SESSION['csrf'])) {
+        $_SESSION['csrf'] = bin2hex(random_bytes(32));
+    }
+    return $_SESSION['csrf'];
+}
+
+/** Câmpul ascuns care se pune în fiecare <form method="post">. */
+function campCsrf(): string
+{
+    return '<input type="hidden" name="csrf" value="' . e(csrfToken()) . '">';
+}
+
+/** Se apelează la începutul oricărui script care primește POST. */
+function verificaCsrf(): void
+{
+    $trimis = $_POST['csrf'] ?? '';
+    // hash_equals compară în timp constant (nu „scapă” informații prin durată)
+    if (!is_string($trimis) || !hash_equals(csrfToken(), $trimis)) {
+        http_response_code(403);
+        exit('Cererea nu a putut fi verificată (token CSRF invalid). Reîncarcă pagina și încearcă din nou.');
+    }
+}
+
+/**
  * Formatează un preț în stil românesc: 1234.5 → „1.234,50 RON”.
  */
 function formatPret(float $pret): string

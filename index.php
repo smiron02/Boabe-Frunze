@@ -50,22 +50,7 @@ $iconite = [1 => '🫘', 2 => '☕', 3 => '🍃', 4 => '🫖'];
     <h2 id="titlu-recomandate">Produse recomandate</h2>
     <div class="produse-grila">
         <?php foreach ($recomandate as $produs): ?>
-            <article class="produs-card">
-                <a href="<?= e(url('produs.php?id=' . $produs['id'])) ?>" tabindex="-1" aria-hidden="true">
-                    <img src="<?= e(imagineProdus($produs['imagine'])) ?>" alt=""
-                         width="400" height="400" loading="lazy">
-                </a>
-                <div class="produs-card__corp">
-                    <span class="produs-card__categorie"><?= e($produs['categorie']) ?></span>
-                    <h3 class="produs-card__nume">
-                        <a href="<?= e(url('produs.php?id=' . $produs['id'])) ?>"><?= e($produs['nume']) ?></a>
-                    </h3>
-                    <?php if ($produs['gramaj']): ?>
-                        <span class="produs-card__gramaj"><?= e($produs['gramaj']) ?></span>
-                    <?php endif; ?>
-                    <span class="produs-card__pret"><?= e(formatPret((float)$produs['pret'])) ?></span>
-                </div>
-            </article>
+            <?php require __DIR__ . '/includes/card_produs.php'; ?>
         <?php endforeach; ?>
     </div>
 </section>

@@ -184,7 +184,11 @@ h1, h2, h3 { line-height: 1.25; margin: 0 0 .6em; }
 
 /* ---------- Carduri produs (refolosite în catalog) ---------- */
 .produse-grila {
-    display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    /* Telefon: 2 coloane; de la 600px: câte încap, minim 220px fiecare */
+    display: grid; gap: 12px; grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (min-width: 600px) {
+    .produse-grila { gap: 20px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
 }
 .produs-card {
     background: var(--culoare-suprafata); border: 1px solid var(--culoare-bordura);
@@ -214,3 +218,59 @@ h1, h2, h3 { line-height: 1.25; margin: 0 0 .6em; }
     border-top: 1px solid rgba(255,255,255,.15); margin-top: 24px; padding-top: 16px; padding-bottom: 16px;
     font-size: .85rem; color: #cbbcae;
 }
+
+/* ---------- Catalog ---------- */
+.intro { color: var(--culoare-text-slab); max-width: 700px; }
+.catalog-bara {
+    display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; justify-content: space-between;
+    margin: 20px 0 8px;
+}
+.filtre { display: flex; flex-wrap: wrap; gap: 8px; }
+.filtru {
+    padding: 6px 14px; border-radius: 999px; border: 1px solid var(--culoare-bordura);
+    background: var(--culoare-suprafata); text-decoration: none; color: var(--culoare-text); font-size: .95rem;
+}
+.filtru:hover { border-color: var(--culoare-primara); }
+.filtru[aria-current="page"] { background: var(--culoare-primara); border-color: var(--culoare-primara); color: #fff; }
+.ordonare { display: flex; align-items: center; gap: 8px; }
+.ordonare select {
+    padding: 6px 10px; font: inherit; border: 1px solid var(--culoare-bordura);
+    border-radius: var(--raza); background: #fff;
+}
+.buton--mic { padding: 6px 14px; }
+/* Când JavaScript e activ, butonul „Aplică” nu mai e necesar */
+.js .ordonare .buton { display: none; }
+.rezultate { color: var(--culoare-text-slab); font-size: .9rem; margin-bottom: 16px; }
+.produs-card--epuizat img { opacity: .55; }
+
+/* ---------- Pagina de produs ---------- */
+.fir-ariadna { font-size: .9rem; color: var(--culoare-text-slab); margin-bottom: 20px; }
+.produs-detalii { display: grid; gap: 32px; }
+@media (min-width: 760px) {
+    .produs-detalii { grid-template-columns: 1fr 1fr; align-items: start; }
+}
+.produs-detalii__imagine img {
+    width: 100%; aspect-ratio: 1; object-fit: cover;
+    border-radius: var(--raza); border: 1px solid var(--culoare-bordura); background: var(--culoare-suprafata);
+}
+.produs-detalii h1 { font-size: clamp(1.6rem, 3vw, 2.2rem); margin-top: 4px; }
+.produs-detalii h2 { font-size: 1.15rem; margin-top: 28px; }
+.produs-detalii__gramaj { color: var(--culoare-text-slab); margin: -8px 0 8px; }
+.produs-detalii__pret { font-size: 1.75rem; font-weight: 700; margin: 0; }
+.nota { font-size: .85rem; color: var(--culoare-text-slab); margin-top: 0; }
+.stoc { font-weight: 600; margin: 12px 0; }
+.stoc--disponibil { color: var(--culoare-accent); }
+.stoc--putin { color: #a15c00; }
+.stoc--epuizat { color: var(--culoare-reducere); }
+.adauga-cos { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 16px 0; }
+.adauga-cos input {
+    width: 80px; padding: 10px; font: inherit; border: 1px solid var(--culoare-bordura); border-radius: var(--raza);
+}
+.caracteristici {
+    display: grid; grid-template-columns: max-content 1fr; gap: 8px 20px; margin: 0;
+}
+.caracteristici dt { color: var(--culoare-text-slab); }
+.caracteristici dd { margin: 0; font-weight: 600; }
+.scala { display: inline-flex; gap: 4px; vertical-align: middle; }
+.scala__punct { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--culoare-primara); }
+.scala__punct--plin { background: var(--culoare-primara); }

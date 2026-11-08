@@ -146,7 +146,7 @@ Site-ul va fi testat cu https://pagespeed.web.dev/. De la început:
 
 - [x] 1. `sql/schema.sql`, `sql/date_test.sql`, `includes/db.php`, `config.example.php`
 - [x] 2. Header, footer, meniu, CSS de bază
-- [ ] 3. Catalog cu categorii, pagina de produs
+- [x] 3. Catalog cu categorii, pagina de produs
 - [ ] 4. Înregistrare, login, logout, roluri
 - [ ] 5. Coș de cumpărături
 - [ ] 6. Checkout, comenzi, stocuri
