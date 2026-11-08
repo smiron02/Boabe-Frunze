@@ -430,3 +430,54 @@ h1, h2, h3 { line-height: 1.25; margin: 0 0 .6em; }
     a { color: #000; text-decoration: none; }
 }
 @page { margin: 15mm; }
+
+/* ---------- Panoul de administrare ---------- */
+.admin-meniu {
+    display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 24px;
+    border-bottom: 2px solid var(--culoare-bordura);
+}
+.admin-meniu a {
+    padding: 8px 14px; text-decoration: none; color: var(--culoare-text-slab);
+    border-bottom: 2px solid transparent; margin-bottom: -2px;
+}
+.admin-meniu a:hover { color: var(--culoare-primara); }
+.admin-meniu a[aria-current="page"] { color: var(--culoare-primara); border-bottom-color: var(--culoare-primara); font-weight: 600; }
+.admin-titlu { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; }
+.admin-filtre { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 12px 0; }
+.admin-filtre input, .admin-filtre select {
+    padding: 6px 10px; font: inherit; border: 1px solid var(--culoare-bordura); border-radius: var(--raza); background: #fff;
+}
+.indicatori { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: 24px; }
+.indicator {
+    background: var(--culoare-suprafata); border: 1px solid var(--culoare-bordura); border-radius: var(--raza);
+    padding: 16px 20px; display: flex; flex-direction: column; gap: 2px;
+}
+.indicator__eticheta { font-size: .85rem; color: var(--culoare-text-slab); }
+.indicator__valoare { font-size: 1.6rem; }
+.tabel-admin td { vertical-align: middle; }
+.miniatura { width: 48px; height: 48px; object-fit: cover; border-radius: 6px; background: var(--culoare-fundal); }
+.miniatura--mare { width: 96px; height: 96px; }
+.rand-inactiv td { opacity: .55; }
+.rand-selectat { background: #fff8ec; }
+.form-stoc { display: flex; gap: 6px; align-items: center; }
+.form-stoc input { width: 80px; padding: 4px 8px; font: inherit; border: 1px solid var(--culoare-bordura); border-radius: 6px; }
+.form-stoc input.stoc-mic { border-color: #e2a04a; background: #fff8ec; }
+/* Celula rămâne celulă de tabel; doar conținutul ei se aliniază pe un rând */
+td.actiuni { white-space: nowrap; }
+td.actiuni > a, td.actiuni > form { display: inline-block; vertical-align: middle; margin: 0 8px 0 0; }
+.buton-link { background: none; border: 0; padding: 6px; font: inherit; color: var(--culoare-primara); text-decoration: underline; cursor: pointer; }
+.form-admin { max-width: 860px; }
+.campuri-2, .campuri-3 { display: grid; gap: 0 16px; }
+@media (min-width: 640px) {
+    .campuri-2 { grid-template-columns: 1fr 1fr; }
+    .campuri-3 { grid-template-columns: 1fr 1fr 1fr; }
+}
+.camp textarea { resize: vertical; }
+.camp-imagine { display: flex; gap: 16px; align-items: flex-start; }
+.camp-imagine input[type=file] { border: 0; padding: 6px 0; }
+.camp-bifa { display: flex; gap: 8px; align-items: center; }
+.camp-bifa input { width: auto; }
+.camp-bifa label { margin: 0; font-weight: 600; }
+.atribute-cafea { border: 1px solid var(--culoare-bordura); border-radius: var(--raza); padding: 8px 16px 0; margin: 16px 0; }
+.atribute-cafea legend { padding: 0 6px; }
+.butoane-form { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }

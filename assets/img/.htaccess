@@ -1,0 +1,5 @@
+# Folderul de imagini primește fișiere încărcate din panoul de administrare.
+# Măsură suplimentară de siguranță: aici nu se execută niciodată scripturi PHP.
+<FilesMatch "\.(php|phtml|phar|php\d)$">
+    Require all denied
+</FilesMatch>

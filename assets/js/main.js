@@ -18,6 +18,24 @@ document.addEventListener('DOMContentLoaded', function () {
         b.addEventListener('click', function () { window.print(); });
     });
 
+    // Formularele <form data-confirma="..."> cer confirmare înainte de trimitere
+    // (ex.: ștergerea unui produs în panoul de administrare)
+    document.querySelectorAll('form[data-confirma]').forEach(function (f) {
+        f.addEventListener('submit', function (ev) {
+            if (!window.confirm(f.dataset.confirma)) ev.preventDefault();
+        });
+    });
+
+    // Bifa <input data-arata="#id"> arată/ascunde secțiunea #id
+    // (ex.: atributele de cafea din formularul de produs)
+    document.querySelectorAll('[data-arata]').forEach(function (bifa) {
+        var tinta = document.querySelector(bifa.dataset.arata);
+        if (!tinta) return;
+        var actualizeaza = function () { tinta.hidden = !bifa.checked; };
+        bifa.addEventListener('change', actualizeaza);
+        actualizeaza();
+    });
+
     var buton = document.querySelector('.meniu-buton');
     var meniu = document.getElementById('meniu-principal');
     if (!buton || !meniu) return;
