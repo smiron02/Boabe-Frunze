@@ -1,0 +1,12 @@
+# Configurația locală conține parole și chei Stripe — nu se versionează
+includes/config.php
+
+# Dependențe Composer (se instalează cu: composer install)
+vendor/
+
+# Fișiere de sistem / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
