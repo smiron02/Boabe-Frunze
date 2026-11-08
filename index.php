@@ -5,7 +5,13 @@
 
 $titluPagina     = 'Cafea de specialitate și ceaiuri premium';
 $descrierePagina = 'Cafea boabe și măcinată, ceaiuri și accesorii. Fă quiz-ul și află ce cafea ți se potrivește.';
+require_once __DIR__ . '/includes/quiz.php';
 require __DIR__ . '/includes/header.php';
+
+// Recomandări personalizate: profilul din contul utilizatorului sau din sesiune
+$utilizatorLogat = utilizatorCurent();
+$profilGust = profilCurent($utilizatorLogat ? (int)$utilizatorLogat['id'] : null);
+$pentruTine = $profilGust ? recomandariCafea($profilGust) : [];
 
 // Produse recomandate: 4 produse active, aflate în stoc, alese aleatoriu
 // (RAND() e acceptabil la un catalog mic; la mii de produse ar fi lent).
@@ -44,6 +50,19 @@ $iconite = [1 => '🫘', 2 => '☕', 3 => '🍃', 4 => '🫖'];
         <a class="buton buton--contur" href="<?= e(url('quiz.php')) ?>">Găsește-ți cafeaua ideală</a>
     </div>
 </section>
+
+<?php if ($pentruTine): ?>
+<section class="sectiune" aria-labelledby="titlu-pentru-tine">
+    <h2 id="titlu-pentru-tine">Recomandate pentru tine</h2>
+    <p class="nota">Pe baza profilului tău de gust (<?= e(numeAparat($profilGust['aparat'])) ?>).
+        <a href="<?= e(url('quiz.php')) ?>">Refă quiz-ul</a></p>
+    <div class="produse-grila">
+        <?php foreach ($pentruTine as $produs): ?>
+            <?php require __DIR__ . '/includes/card_produs.php'; ?>
+        <?php endforeach; ?>
+    </div>
+</section>
+<?php endif; ?>
 
 <?php if ($promotii): ?>
 <section class="sectiune" aria-labelledby="titlu-promotii">

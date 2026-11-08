@@ -489,3 +489,42 @@ td.actiuni > a, td.actiuni > form { display: inline-block; vertical-align: middl
 .stare-promo--expirata { background: var(--culoare-fundal); color: var(--culoare-text-slab); }
 code { font-size: .8rem; word-break: break-all; }
 .adresa + h2 { margin-top: 20px; }
+
+/* ---------- Quiz ---------- */
+.quiz { max-width: 760px; }
+.quiz__intrebare { border: 1px solid var(--culoare-bordura); margin: 0 0 16px; }
+.quiz__intrebare legend { font-weight: 700; font-size: 1.1rem; padding: 0 6px; }
+.quiz__nr {
+    display: inline-flex; align-items: center; justify-content: center; width: 1.8em; height: 1.8em;
+    border-radius: 50%; background: var(--culoare-primara); color: #fff; font-size: .9rem; margin-right: 4px;
+}
+.quiz__variante { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-top: 8px; }
+.quiz__varianta {
+    display: flex; gap: 10px; align-items: center; padding: 12px 14px; cursor: pointer;
+    border: 2px solid var(--culoare-bordura); border-radius: var(--raza); background: #fff;
+}
+.quiz__varianta:hover { border-color: var(--culoare-primara); }
+.quiz__varianta:has(input:checked) { border-color: var(--culoare-primara); background: #f6efe8; }
+.quiz__varianta input { accent-color: var(--culoare-primara); width: 18px; height: 18px; flex-shrink: 0; }
+.profil-gust { max-width: 520px; }
+.recomandari { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.recomandare { position: relative; display: flex; flex-direction: column; gap: 6px; margin: 0; }
+.recomandare img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 6px; background: var(--culoare-fundal); }
+.recomandare__potrivire {
+    position: absolute; top: 28px; right: 28px; z-index: 1; display: flex; flex-direction: column; align-items: center;
+    background: var(--culoare-accent); color: #fff; font-weight: 800; font-size: 1.3rem; line-height: 1.1;
+    border-radius: 12px; padding: 8px 12px;
+}
+.recomandare__potrivire small { font-size: .7rem; font-weight: 600; }
+/* Eticheta stă peste imagine, ca toate cardurile să rămână aliniate */
+.recomandare__eticheta {
+    position: absolute; top: 28px; left: 28px; z-index: 1; max-width: 55%;
+    background: #fff; color: var(--culoare-accent); border-radius: 999px; padding: 3px 10px;
+    font-size: .75rem; font-weight: 700; text-transform: uppercase; box-shadow: var(--umbra);
+}
+.recomandari + .nota { margin-top: 12px; }
+.recomandare .produs-card__nume { font-size: 1.15rem; margin: 4px 0 0; }
+.recomandare .nota { margin: 0; }
+.recomandare form { margin-top: auto; }
+.caracteristici--mici { font-size: .9rem; gap: 4px 12px; }
+.caracteristici--mici .scala__punct { width: 11px; height: 11px; }

@@ -35,19 +35,6 @@ $procent  = $produs['procent_promo'] !== null ? (int)$produs['procent_promo'] : 
 $eCafea   = $produs['intensitate'] !== null;
 $aparate  = ['filtru' => 'Filtru / V60', 'espresso' => 'Espressor', 'ibric' => 'Ibric'];
 
-/**
- * Scală vizuală 1–5 (puncte pline/goale) pentru intensitate, aciditate, amăreală.
- * Textul „3 din 5” este pentru cititoarele de ecran.
- */
-function scala(int $valoare): string
-{
-    $html = '<span class="scala" role="img" aria-label="' . $valoare . ' din 5">';
-    for ($i = 1; $i <= 5; $i++) {
-        $html .= '<span class="scala__punct' . ($i <= $valoare ? ' scala__punct--plin' : '') . '"></span>';
-    }
-    return $html . '</span>';
-}
-
 // ---------- 3. Afișarea ----------
 $titluPagina     = $produs['nume'];
 $descrierePagina = mb_strimwidth($produs['descriere'] ?? $produs['nume'], 0, 155, '…');

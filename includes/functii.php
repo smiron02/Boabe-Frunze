@@ -304,6 +304,20 @@ function returSigur(?string $retur): ?string
 }
 
 /**
+ * Scală vizuală 1–5 (puncte pline/goale) pentru intensitate, aciditate, amăreală
+ * (pagina de produs, quiz, contul utilizatorului).
+ * Textul „3 din 5” este pentru cititoarele de ecran.
+ */
+function scala(int $valoare): string
+{
+    $html = '<span class="scala" role="img" aria-label="' . $valoare . ' din 5">';
+    for ($i = 1; $i <= 5; $i++) {
+        $html .= '<span class="scala__punct' . ($i <= $valoare ? ' scala__punct--plin' : '') . '"></span>';
+    }
+    return $html . '</span>';
+}
+
+/**
  * Formatează un preț în stil românesc: 1234.5 → „1.234,50 RON”.
  */
 function formatPret(float $pret): string

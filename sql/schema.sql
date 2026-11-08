@@ -16,7 +16,7 @@ USE ceai_cafea;
 
 -- Ștergem în ordinea inversă a dependențelor (copiii înaintea părinților)
 SET FOREIGN_KEY_CHECKS = 0;
-DROP TABLE IF EXISTS quiz_raspunsuri, quiz_intrebari, abonamente, facturi,
+DROP TABLE IF EXISTS profil_gust, quiz_raspunsuri, quiz_intrebari, abonamente, facturi,
     promotii, comenzi_produse, comenzi, utilizatori, atribute_cafea,
     produse, categorii;
 SET FOREIGN_KEY_CHECKS = 1;
@@ -196,4 +196,24 @@ CREATE TABLE quiz_raspunsuri (
     aparat              ENUM('filtru','espresso','ibric') NULL,
     CONSTRAINT fk_raspunsuri_intrebare FOREIGN KEY (intrebare_id)
         REFERENCES quiz_intrebari(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ---------------------------------------------------------------------
+-- Profilul de gust rezultat din quiz (doar pentru utilizatorii autentificați).
+-- UN rând per utilizator (utilizator_id = cheie primară): refacerea quiz-ului
+-- SUPRASCRIE profilul (INSERT ... ON DUPLICATE KEY UPDATE).
+-- ---------------------------------------------------------------------
+CREATE TABLE profil_gust (
+    utilizator_id INT UNSIGNED PRIMARY KEY,
+    intensitate   TINYINT UNSIGNED NOT NULL,
+    acid          TINYINT UNSIGNED NOT NULL,
+    amar          TINYINT UNSIGNED NOT NULL,
+    aparat        ENUM('filtru','espresso','ibric') NOT NULL,
+    actualizat_la DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT chk_profil_intensitate CHECK (intensitate BETWEEN 1 AND 5),
+    CONSTRAINT chk_profil_acid        CHECK (acid BETWEEN 1 AND 5),
+    CONSTRAINT chk_profil_amar        CHECK (amar BETWEEN 1 AND 5),
+    -- CASCADE: dacă se șterge contul, dispare și profilul
+    CONSTRAINT fk_profil_utilizator FOREIGN KEY (utilizator_id)
+        REFERENCES utilizatori(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

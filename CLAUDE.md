@@ -112,6 +112,7 @@ Proiectul este evaluat după un barem, deci fiecare funcționalitate trebuie să
 | `abonamente` | id, utilizator_id, produs_id, frecventa, urmatoarea_livrare, activ (doar schemă, neimplementat) |
 | `quiz_intrebari` | id, text, ordine |
 | `quiz_raspunsuri` | id, intrebare_id, text, pondere_intensitate, pondere_acid, pondere_amar, aparat |
+| `profil_gust` | utilizator_id (PK), intensitate, acid, amar, aparat, actualizat_la — decis în etapa 10: un rând per utilizator, suprascris la refacerea quiz-ului; vizitatorii au profilul doar în sesiune |
 
 Relații cu chei străine și `ON DELETE` potrivit. Produsele din categoria Ceai și Accesorii pot avea `atribute_cafea` gol.
 
@@ -154,7 +155,7 @@ Site-ul va fi testat cu https://pagespeed.web.dev/. De la început:
 - [x] 7. Promoții și factură
 - [x] 8. Plată Stripe în mod test
 - [x] 9. Panou de administrare
-- [ ] 10. Quiz „Găsește-ți cafeaua"
+- [x] 10. Quiz „Găsește-ți cafeaua"
 - [ ] 11. Optimizare PageSpeed, publicare, documentație cu print screen-uri
 
 ## Documentația finală (de pregătit în `/docs`)

@@ -5,7 +5,9 @@
  */
 
 require_once __DIR__ . '/includes/auth.php';
+require_once __DIR__ . '/includes/quiz.php';
 $utilizator = cereAutentificare();
+$profilGust = profilCurent((int)$utilizator['id']);
 
 // Citim datele proaspete din baza de date (sesiunea are doar strictul necesar)
 $stmt = db()->prepare('SELECT nume, email, rol, creat_la FROM utilizatori WHERE id = :id');
@@ -39,6 +41,24 @@ require __DIR__ . '/includes/header.php';
         <dt>Tip cont</dt>      <dd><?= $profil['rol'] === 'admin' ? 'Administrator' : 'Client' ?></dd>
         <dt>Client din</dt>    <dd><?= e(date('d.m.Y', strtotime($profil['creat_la']))) ?></dd>
     </dl>
+</section>
+
+<section class="card">
+    <h2>Profilul meu de gust</h2>
+    <?php if (!$profilGust): ?>
+        <p>Nu ai completat încă quiz-ul. <a href="<?= e(url('quiz.php')) ?>">Găsește-ți cafeaua ideală</a></p>
+    <?php else: ?>
+        <dl class="caracteristici">
+            <dt>Preparare</dt>   <dd><?= e(ucfirst(numeAparat($profilGust['aparat']))) ?></dd>
+            <dt>Intensitate</dt> <dd><?= scala((int)$profilGust['intensitate']) ?></dd>
+            <dt>Aciditate</dt>   <dd><?= scala((int)$profilGust['acid']) ?></dd>
+            <dt>Amăreală</dt>    <dd><?= scala((int)$profilGust['amar']) ?></dd>
+        </dl>
+        <p class="nota">
+            <?php if (isset($profilGust['actualizat_la'])): ?>Actualizat la <?= e(date('d.m.Y', strtotime($profilGust['actualizat_la']))) ?>. <?php endif; ?>
+            <a href="<?= e(url('quiz.php?rezultat')) ?>">Vezi recomandările</a> · <a href="<?= e(url('quiz.php')) ?>">Refă quiz-ul</a>
+        </p>
+    <?php endif; ?>
 </section>
 
 <section class="card">
