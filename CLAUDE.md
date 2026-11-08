@@ -91,7 +91,8 @@ Proiectul este evaluat după un barem, deci fiecare funcționalitate trebuie să
 │   └── /img             # imagini produse, preferabil WebP
 ├── /sql
 │   ├── schema.sql       # tabele
-│   └── date_test.sql    # 20-30 produse de test
+│   ├── date_test.sql    # 20-30 produse de test
+│   └── hosting.sql      # schema + date, fără CREATE DATABASE/USE (import pe găzduire)
 ├── /docs                # print screen-uri și documentația proiectului
 ├── .gitignore
 └── CLAUDE.md
