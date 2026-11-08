@@ -50,6 +50,11 @@ function pornesteSesiunea(): void
 {
     if (session_status() === PHP_SESSION_NONE) {
         session_start([
+            // Nume propriu pentru cookie (în loc de PHPSESSID, numele implicit):
+            // evită conflictul cu un cookie PHPSESSID rămas în browser de la alt
+            // site sau de la o vizită prin https:// (Chrome nu lasă o pagină http://
+            // să suprascrie un cookie marcat „Secure”, iar sesiunea s-ar pierde).
+            'name'            => 'BFSESIUNE',
             'cookie_httponly' => true,
             'cookie_samesite' => 'Lax',
             'cookie_secure'   => str_starts_with(URL_BAZA, 'https://'),
