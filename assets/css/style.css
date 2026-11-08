@@ -300,3 +300,51 @@ h1, h2, h3 { line-height: 1.25; margin: 0 0 .6em; }
 }
 .meniu__buton-link:hover { color: var(--culoare-primara); }
 @media (min-width: 860px) { .meniu__buton-link { padding: 8px 12px; width: auto; } }
+
+/* ---------- Coșul de cumpărături ---------- */
+.cos-gol { text-align: center; padding: 40px 24px; }
+.tabel-cos {
+    width: 100%; border-collapse: collapse; background: var(--culoare-suprafata);
+    border: 1px solid var(--culoare-bordura); border-radius: var(--raza); overflow: hidden;
+}
+.tabel-cos th, .tabel-cos td { padding: 14px 16px; text-align: left; vertical-align: middle; }
+.tabel-cos thead th {
+    background: var(--culoare-fundal); font-size: .85rem; text-transform: uppercase;
+    letter-spacing: .04em; color: var(--culoare-text-slab);
+}
+.tabel-cos tbody tr + tr td { border-top: 1px solid var(--culoare-bordura); }
+.rand-problema { background: var(--culoare-eroare-fundal); }
+.cos-produs { display: flex; gap: 12px; align-items: center; }
+.cos-produs img { width: 64px; height: 64px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+.cos-produs a { font-weight: 600; color: var(--culoare-text); text-decoration: none; }
+.cos-produs a:hover { color: var(--culoare-primara); }
+.cos-cantitate { display: flex; gap: 8px; align-items: center; }
+.cos-cantitate input {
+    width: 70px; padding: 6px 8px; font: inherit;
+    border: 1px solid var(--culoare-bordura); border-radius: var(--raza);
+}
+.buton-sterge {
+    background: none; border: 0; padding: 6px; font: inherit; cursor: pointer;
+    color: var(--culoare-reducere); text-decoration: underline;
+}
+.cos-sumar { margin-top: 24px; max-width: 420px; margin-left: auto; }
+.cos-sumar__total { display: flex; justify-content: space-between; font-size: 1.25rem; margin: 0 0 4px; }
+.cos-sumar__butoane { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+.cos-sumar__butoane .buton { flex: 1; text-align: center; }
+
+/* Telefon: fiecare rând al tabelului devine un card, cu etichete din data-eticheta */
+@media (max-width: 699px) {
+    .tabel-cos thead { display: none; }
+    .tabel-cos, .tabel-cos tbody, .tabel-cos tr, .tabel-cos td { display: block; width: 100%; }
+    .tabel-cos tr { padding: 12px 0; }
+    .tabel-cos tbody tr + tr td { border-top: 0; }
+    .tabel-cos tbody tr + tr { border-top: 1px solid var(--culoare-bordura); }
+    .tabel-cos td { padding: 6px 16px; }
+    .tabel-cos td[data-eticheta]:not([data-eticheta="Produs"]) {
+        display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    }
+    .tabel-cos td[data-eticheta]:not([data-eticheta="Produs"])::before {
+        content: attr(data-eticheta); color: var(--culoare-text-slab); font-size: .9rem;
+    }
+    .cos-sumar { max-width: none; }
+}

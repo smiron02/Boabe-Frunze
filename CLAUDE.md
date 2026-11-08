@@ -148,7 +148,7 @@ Site-ul va fi testat cu https://pagespeed.web.dev/. De la început:
 - [x] 2. Header, footer, meniu, CSS de bază
 - [x] 3. Catalog cu categorii, pagina de produs
 - [x] 4. Înregistrare, login, logout, roluri
-- [ ] 5. Coș de cumpărături
+- [x] 5. Coș de cumpărături
 - [ ] 6. Checkout, comenzi, stocuri
 - [ ] 7. Promoții și factură
 - [ ] 8. Plată Stripe în mod test

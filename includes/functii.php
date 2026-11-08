@@ -60,6 +60,76 @@ function activ(string $pagina, string $paginaCurenta): string
 }
 
 /**
+ * Conținutul coșului, cu date PROASPETE din baza de date.
+ *
+ * În sesiune ținem doar [produs_id => cantitate]. Numele, prețul și stocul
+ * se citesc de fiecare dată din baza de date, deci nimeni nu poate modifica
+ * prețul din browser, iar o schimbare de preț/stoc se vede imediat în coș.
+ *
+ * Returnează:
+ *   'linii'    => listă de produse cu cantitate, valoare și eventuala problemă
+ *   'total'    => suma valorilor liniilor disponibile
+ *   'probleme' => true dacă vreo linie nu poate fi comandată (blochează checkout)
+ */
+function continutCos(): array
+{
+    pornesteSesiunea();
+    $cos = $_SESSION['cos'] ?? [];
+    $rezultat = ['linii' => [], 'total' => 0.0, 'probleme' => false];
+    if (!$cos) {
+        return $rezultat;
+    }
+
+    // Un singur SELECT pentru toate produsele: WHERE id IN (?, ?, ?)
+    // Construim doar SEMNELE DE ÎNTREBARE din cod; valorile merg ca parametri.
+    $iduri = array_keys($cos);
+    $semne = implode(',', array_fill(0, count($iduri), '?'));
+    $stmt = db()->prepare(
+        "SELECT p.id, p.nume, p.pret, p.gramaj, p.imagine, p.stoc, p.activ, c.nume AS categorie
+           FROM produse p JOIN categorii c ON c.id = p.categorie_id
+          WHERE p.id IN ($semne)"
+    );
+    $stmt->execute($iduri);
+    $produse = [];
+    foreach ($stmt->fetchAll() as $p) {
+        $produse[(int)$p['id']] = $p;
+    }
+
+    foreach ($cos as $id => $cantitate) {
+        if (!isset($produse[$id])) {
+            unset($_SESSION['cos'][$id]);   // produsul a fost șters între timp
+            continue;
+        }
+        $p = $produse[$id];
+        $pret = (float)$p['pret'];          // în etapa 7: prețul cu promoție
+        $stoc = (int)$p['stoc'];
+
+        $problema = null;
+        if (!$p['activ'] || $stoc === 0) {
+            $problema = 'Produsul nu mai este disponibil. Te rugăm să-l elimini din coș.';
+        } elseif ($cantitate > $stoc) {
+            $problema = "Mai sunt doar $stoc bucăți în stoc. Actualizează cantitatea.";
+        }
+
+        $linie = $p + [
+            'pret_unitar' => $pret,
+            'cantitate'   => $cantitate,
+            'valoare'     => round($pret * $cantitate, 2),
+            'problema'    => $problema,
+        ];
+        $rezultat['linii'][] = $linie;
+
+        if ($problema) {
+            $rezultat['probleme'] = true;
+        } else {
+            $rezultat['total'] += $linie['valoare'];
+        }
+    }
+    $rezultat['total'] = round($rezultat['total'], 2);
+    return $rezultat;
+}
+
+/**
  * Utilizatorul autentificat (setat la login, în etapa 4) sau null.
  */
 function utilizatorCurent(): ?array

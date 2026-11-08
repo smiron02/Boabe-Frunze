@@ -91,6 +91,8 @@ require __DIR__ . '/includes/header.php';
             <?= campCsrf() ?>
             <input type="hidden" name="actiune" value="adauga">
             <input type="hidden" name="produs_id" value="<?= (int)$produs['id'] ?>">
+            <!-- După adăugare revenim pe această pagină (verificat cu returSigur()) -->
+            <input type="hidden" name="retur" value="<?= e($_SERVER['REQUEST_URI']) ?>">
             <label for="cantitate">Cantitate</label>
             <input id="cantitate" name="cantitate" type="number" value="1" min="1"
                    max="<?= max($stoc, 1) ?>" <?= $stoc === 0 ? 'disabled' : '' ?>>
