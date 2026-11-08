@@ -35,7 +35,9 @@ define('DB_PAROLA', '');                             // XAMPP: gol implicit
 
 // ---------------------------------------------------------------
 // Stripe — DOAR chei de test (încep cu pk_test_ / sk_test_)
-// https://dashboard.stripe.com/test/apikeys
+// https://dashboard.stripe.com/test/apikeys  (Developers → API keys, „Test mode”)
+// Biblioteca: rulează „composer install” în folderul proiectului.
+// Cheile live (sk_live_) sunt refuzate de includes/stripe.php.
 // ---------------------------------------------------------------
 define('STRIPE_CHEIE_PUBLICA', 'pk_test_...');
 define('STRIPE_CHEIE_SECRETA', 'sk_test_...');

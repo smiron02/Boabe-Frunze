@@ -16,22 +16,9 @@ if (!$comanda) {
     pagina404('Comanda nu există.');
 }
 
-// ----------------------------------------------------------------------
-// TEMPORAR (etapa 6): confirmarea comenzii fără plată, pentru a demonstra
-// scăderea stocului. În etapa 8 este înlocuită de plata cu Stripe.
-// ----------------------------------------------------------------------
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['actiune'] ?? '') === 'confirma_test') {
-    verificaCsrf();
-    try {
-        if (confirmaPlata($comanda['id'])) {
-            unset($_SESSION['cos']);                 // comanda e confirmată → golim coșul
-            seteazaFlash('succes', 'Comanda a fost confirmată. Stocul produselor a fost actualizat.');
-        } else {
-            seteazaFlash('eroare', 'Comanda nu mai poate fi confirmată (statusul ei s-a schimbat).');
-        }
-    } catch (RuntimeException $ex) {
-        seteazaFlash('eroare', $ex->getMessage());
-    }
+// Întoarcere de pe pagina Stripe prin „Înapoi” / anulare
+if (($_GET['plata'] ?? '') === 'anulata' && $comanda['status'] === 'noua') {
+    seteazaFlash('eroare', 'Plata a fost anulată. Comanda te așteaptă — poți încerca din nou oricând.');
     redirectioneaza('comanda.php?id=' . $comanda['id']);
 }
 
@@ -59,13 +46,17 @@ require __DIR__ . '/includes/header.php';
 <?php if ($comanda['status'] === 'noua'): ?>
     <div class="card card--atentie">
         <h2>Plata</h2>
-        <p>Plata online cu cardul va fi disponibilă în curând (etapa 8 — Stripe).</p>
-        <form method="post" action="<?= e(url('comanda.php?id=' . $comanda['id'])) ?>">
+        <p>Total de plată: <strong><?= e(formatPret((float)$comanda['total'])) ?></strong></p>
+        <!-- POST + CSRF către plata.php, care creează sesiunea Stripe Checkout -->
+        <form method="post" action="<?= e(url('plata.php')) ?>">
             <?= campCsrf() ?>
-            <input type="hidden" name="actiune" value="confirma_test">
-            <button class="buton" type="submit">Confirmă comanda (test)</button>
+            <input type="hidden" name="comanda_id" value="<?= (int)$comanda['id'] ?>">
+            <button class="buton" type="submit">Plătește cu cardul</button>
         </form>
-        <p class="nota">Buton temporar, doar pentru testare: marchează comanda ca plătită și scade stocul.</p>
+        <p class="nota">
+            Plată securizată prin Stripe, în <strong>mod test</strong> — nu se încasează bani reali.
+            Card de test: 4242 4242 4242 4242, orice dată viitoare, orice CVC.
+        </p>
     </div>
 <?php endif; ?>
 

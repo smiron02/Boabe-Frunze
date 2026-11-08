@@ -1,7 +1,7 @@
 <?php
 /**
  * Logica comenzilor: calculul TVA, plasarea comenzii, confirmarea plății.
- * Folosit de checkout.php, comanda.php și (în etapa 8) de plata_succes.php.
+ * Folosit de checkout.php, comanda.php, factura.php, plata.php și plata_succes.php.
  */
 
 require_once __DIR__ . '/functii.php';
@@ -102,8 +102,7 @@ function plaseazaComanda(int $utilizatorId, string $adresa): int
 
 /**
  * Confirmă plata unei comenzi: scade stocul și trece comanda în „platita”.
- * Apelată din butonul temporar de test (etapa 6) și, din etapa 8,
- * după verificarea plății la Stripe.
+ * Apelată din plata_succes.php, DOAR după ce Stripe a confirmat plata.
  *
  * SELECT ... FOR UPDATE blochează rândurile citite până la COMMIT: dacă doi
  * clienți cumpără ultima bucată în același timp, al doilea așteaptă și vede

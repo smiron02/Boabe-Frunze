@@ -2,7 +2,7 @@
 /**
  * Finalizarea comenzii: datele de livrare + rezumatul comenzii.
  * La trimitere se creează comanda (status „noua”) și se ajunge pe pagina ei.
- * Plata (Stripe) se adaugă în etapa 8.
+ * Plata cu Stripe pornește de pe pagina comenzii (plata.php).
  */
 
 require_once __DIR__ . '/includes/auth.php';

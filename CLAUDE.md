@@ -141,6 +141,7 @@ Site-ul va fi testat cu https://pagespeed.web.dev/. De la început:
 - Fă un commit Git după fiecare etapă funcțională, cu mesaj descriptiv în română.
 - Nu șterge și nu rescrie fișiere existente fără să spui ce schimbi și de ce.
 - Mediul local: XAMPP sau Laragon (PHP 8 + MySQL), accesibil la `http://localhost/ceai-cafea/`.
+- Dependențe: `composer install` (instalează `stripe/stripe-php` în `vendor/`, care nu e în Git). Cheile Stripe de test se pun în `includes/config.php`.
 
 ## Etape (bifează pe parcurs)
 
@@ -151,7 +152,7 @@ Site-ul va fi testat cu https://pagespeed.web.dev/. De la început:
 - [x] 5. Coș de cumpărături
 - [x] 6. Checkout, comenzi, stocuri
 - [x] 7. Promoții și factură
-- [ ] 8. Plată Stripe în mod test
+- [x] 8. Plată Stripe în mod test
 - [ ] 9. Panou de administrare
 - [ ] 10. Quiz „Găsește-ți cafeaua"
 - [ ] 11. Optimizare PageSpeed, publicare, documentație cu print screen-uri

@@ -1,0 +1,13 @@
+{
+    "name": "boabe-frunze/magazin",
+    "description": "Magazin online de cafea și ceai — proiect universitar (PHP + MySQL)",
+    "type": "project",
+    "require": {
+        "php": ">=8.1",
+        "stripe/stripe-php": "^22.1"
+    },
+    "config": {
+        "platform": { "php": "8.1.0" },
+        "sort-packages": true
+    }
+}
