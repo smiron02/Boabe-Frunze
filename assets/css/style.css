@@ -388,3 +388,45 @@ h1, h2, h3 { line-height: 1.25; margin: 0 0 .6em; }
     .tabel-simplu th, .tabel-simplu td, .tabel-tva th, .tabel-tva td { padding: 6px 3px; }
     .tabel-simplu thead th, .tabel-tva thead th { font-size: .7rem; }
 }
+
+/* ---------- Promoții ---------- */
+.produs-card__imagine { position: relative; display: block; }
+.insigna-reducere {
+    position: absolute; top: 10px; left: 10px; z-index: 1;
+    background: var(--culoare-reducere); color: #fff; font-weight: 700; font-size: .85rem;
+    padding: 2px 8px; border-radius: 999px;
+}
+.insigna-reducere--inline { position: static; vertical-align: middle; font-size: .9rem; }
+.pret-vechi { color: var(--culoare-text-slab); font-weight: 400; font-size: .9em; margin-right: 6px; }
+.pret-redus { color: var(--culoare-reducere); }
+.produs-detalii__pret .pret-vechi { font-size: 1.1rem; margin: 0 8px; }
+
+/* ---------- Factura ---------- */
+.factura-actiuni { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 12px; }
+.factura {
+    background: #fff; border: 1px solid var(--culoare-bordura); border-radius: var(--raza);
+    padding: 32px; max-width: 900px; margin: 0 auto; overflow-x: auto;
+}
+.factura h1 { font-size: 1.6rem; margin-bottom: 8px; }
+.factura h2 { font-size: .85rem; text-transform: uppercase; letter-spacing: .05em; color: var(--culoare-text-slab); margin-bottom: 6px; }
+.factura__antet { display: flex; justify-content: space-between; gap: 24px; border-bottom: 2px solid var(--culoare-text); padding-bottom: 16px; }
+.factura__marca { font-size: 1.3rem; font-weight: 700; color: var(--culoare-primara-inchisa); margin: 0; }
+.factura__parti { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin: 24px 0; }
+.tabel-factura { width: 100%; border-collapse: collapse; font-size: .9rem; }
+.tabel-factura th, .tabel-factura td { border: 1px solid var(--culoare-bordura); padding: 6px 8px; text-align: right; }
+.tabel-factura th:nth-child(2), .tabel-factura td:nth-child(2) { text-align: left; }
+.tabel-factura thead th { background: var(--culoare-fundal); font-size: .78rem; }
+.factura__totaluri { margin-left: auto; max-width: 480px; }
+.factura__total { text-align: right; font-size: 1.2rem; margin-top: 12px; }
+.factura__subsol { margin-top: 32px; font-size: .85rem; color: var(--culoare-text-slab); }
+
+/* ---------- Tipărire (Ctrl+P / „Salvează ca PDF”) ---------- */
+@media print {
+    .antet, .subsol, .sari-la-continut, .fara-tiparire, .mesaj { display: none !important; }
+    body { background: #fff; color: #000; font-size: 11pt; }
+    .continut { padding: 0; }
+    .factura { border: 0; padding: 0; max-width: none; }
+    .tabel-factura thead th { background: #eee; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    a { color: #000; text-decoration: none; }
+}
+@page { margin: 15mm; }

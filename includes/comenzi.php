@@ -17,6 +17,12 @@ require_once __DIR__ . '/functii.php';
  *
  * Rezultat: ['cote' => [11 => [baza, tva, total], 21 => [...]], 'baza', 'tva', 'total']
  */
+function tvaLinie(float $valoare, float $cota): array
+{
+    $baza = round($valoare / (1 + $cota / 100), 2);
+    return ['baza' => $baza, 'tva' => round($valoare - $baza, 2)];
+}
+
 function detaliereTva(array $linii): array
 {
     $rez = ['cote' => [], 'baza' => 0.0, 'tva' => 0.0, 'total' => 0.0];
@@ -24,8 +30,7 @@ function detaliereTva(array $linii): array
     foreach ($linii as $l) {
         $valoare = (float)$l['valoare'];
         $cota    = (float)$l['cota_tva'];
-        $baza    = round($valoare / (1 + $cota / 100), 2);
-        $tva     = round($valoare - $baza, 2);
+        ['baza' => $baza, 'tva' => $tva] = tvaLinie($valoare, $cota);
 
         $cheie = (string)$cota;   // cheie text: „11.00”, „21.00”
         $rez['cote'][$cheie] ??= ['cota' => $cota, 'baza' => 0.0, 'tva' => 0.0, 'total' => 0.0];
@@ -146,7 +151,9 @@ function confirmaPlata(int $comandaId, ?string $stripeId = null): bool
         );
         $stmt->execute(['stripe' => $stripeId, 'id' => $comandaId]);
 
-        // Etapa 7: aici se va emite și factura.
+        // În ACEEAȘI tranzacție emitem factura: plata, stocul și factura
+        // se salvează împreună sau deloc.
+        emiteFactura($pdo, $comandaId);
 
         $pdo->commit();
         return true;
@@ -157,12 +164,61 @@ function confirmaPlata(int $comandaId, ?string $stripeId = null): bool
 }
 
 /**
+ * Emite factura unei comenzi (apelată din confirmaPlata, în tranzacție).
+ *
+ * Numărul facturii vine din id-ul AUTO_INCREMENT al rândului: MySQL garantează
+ * că e unic și crescător, chiar dacă două facturi se emit în același timp.
+ * Seria completă: SERIE-AN-NUMĂR, ex.: BF-2026-00001.
+ */
+function emiteFactura(PDO $pdo, int $comandaId): string
+{
+    $stmt = $pdo->prepare(
+        'SELECT ROUND(pret_unitar * cantitate, 2) AS valoare, cota_tva
+           FROM comenzi_produse WHERE comanda_id = :id'
+    );
+    $stmt->execute(['id' => $comandaId]);
+    $tva = detaliereTva($stmt->fetchAll());
+
+    // 1. Inserăm factura cu o serie provizorie (unică, deoarece comanda_id e unic)...
+    $stmt = $pdo->prepare(
+        'INSERT INTO facturi (comanda_id, serie_numar, baza, tva, total)
+         VALUES (:c, :provizoriu, :baza, :tva, :total)'
+    );
+    $stmt->execute([
+        'c' => $comandaId, 'provizoriu' => 'PROVIZORIU-' . $comandaId,
+        'baza' => $tva['baza'], 'tva' => $tva['tva'], 'total' => $tva['total'],
+    ]);
+    $id = (int)$pdo->lastInsertId();
+
+    // 2. ...apoi o numerotăm definitiv folosind id-ul primit
+    $serie = sprintf('%s-%s-%05d', SERIE_FACTURA, date('Y'), $id);
+    $pdo->prepare('UPDATE facturi SET serie_numar = :s WHERE id = :id')
+        ->execute(['s' => $serie, 'id' => $id]);
+    return $serie;
+}
+
+/**
+ * Factura unei comenzi (sau null dacă nu a fost emisă — comanda neplătită).
+ */
+function facturaComenzii(int $comandaId): ?array
+{
+    $stmt = db()->prepare('SELECT * FROM facturi WHERE comanda_id = :id');
+    $stmt->execute(['id' => $comandaId]);
+    return $stmt->fetch() ?: null;
+}
+
+/**
  * O comandă a utilizatorului dat (sau null dacă nu există / nu e a lui),
  * împreună cu liniile ei.
  */
 function comandaUtilizator(int $comandaId, int $utilizatorId): ?array
 {
-    $stmt = db()->prepare('SELECT * FROM comenzi WHERE id = :id AND utilizator_id = :u');
+    $stmt = db()->prepare(
+        'SELECT c.*, u.nume AS client_nume, u.email AS client_email
+           FROM comenzi c
+           JOIN utilizatori u ON u.id = c.utilizator_id
+          WHERE c.id = :id AND c.utilizator_id = :u'
+    );
     $stmt->execute(['id' => $comandaId, 'u' => $utilizatorId]);
     $comanda = $stmt->fetch();
     if (!$comanda) {

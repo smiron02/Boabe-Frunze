@@ -150,7 +150,7 @@ Site-ul va fi testat cu https://pagespeed.web.dev/. De la început:
 - [x] 4. Înregistrare, login, logout, roluri
 - [x] 5. Coș de cumpărături
 - [x] 6. Checkout, comenzi, stocuri
-- [ ] 7. Promoții și factură
+- [x] 7. Promoții și factură
 - [ ] 8. Plată Stripe în mod test
 - [ ] 9. Panou de administrare
 - [ ] 10. Quiz „Găsește-ți cafeaua"

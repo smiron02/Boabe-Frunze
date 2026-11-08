@@ -35,7 +35,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['actiune'] ?? '') === 'conf
     redirectioneaza('comanda.php?id=' . $comanda['id']);
 }
 
-$tva = detaliereTva($comanda['linii']);
+$tva     = detaliereTva($comanda['linii']);
+$factura = facturaComenzii($comanda['id']);
 
 $titluPagina = 'Comanda nr. ' . $comanda['id'];
 require __DIR__ . '/includes/header.php';
@@ -50,6 +51,10 @@ require __DIR__ . '/includes/header.php';
     Plasată la <?= e(date('d.m.Y, H:i', strtotime($comanda['data']))) ?> ·
     <span class="status status--<?= e($comanda['status']) ?>"><?= e(etichetaStatus($comanda['status'])) ?></span>
 </p>
+
+<?php if ($factura): ?>
+    <p><a class="buton buton--contur" href="<?= e(url('factura.php?comanda=' . $comanda['id'])) ?>">Vezi factura <?= e($factura['serie_numar']) ?></a></p>
+<?php endif; ?>
 
 <?php if ($comanda['status'] === 'noua'): ?>
     <div class="card card--atentie">

@@ -18,8 +18,10 @@ $categorieId = filter_input(INPUT_GET, 'categorie', FILTER_VALIDATE_INT, ['optio
 // o LISTĂ ALBĂ: utilizatorul alege doar o cheie, SQL-ul vine din codul nostru.
 $ordonari = [
     'recomandate' => ['eticheta' => 'Recomandate',          'sql' => 'p.id ASC'],
-    'pret_asc'    => ['eticheta' => 'Preț crescător',       'sql' => 'p.pret ASC'],
-    'pret_desc'   => ['eticheta' => 'Preț descrescător',    'sql' => 'p.pret DESC'],
+    // Ordonăm după prețul FINAL (cu reducere), nu după cel din catalog
+    'pret_asc'    => ['eticheta' => 'Preț crescător',       'sql' => 'pret_final ASC'],
+    'pret_desc'   => ['eticheta' => 'Preț descrescător',    'sql' => 'pret_final DESC'],
+    'reduceri'    => ['eticheta' => 'Reduceri',             'sql' => 'procent_promo IS NULL, procent_promo DESC'],
     'nume'        => ['eticheta' => 'Nume (A–Z)',           'sql' => 'p.nume ASC'],
 ];
 $ordonare = $_GET['ordonare'] ?? 'recomandate';
@@ -38,17 +40,22 @@ if ($categorieId !== null) {
 
 // ---------- 3. Produsele ----------
 
-// Produsele epuizate apar la final: (p.stoc = 0) este 0 pentru cele în stoc, 1 pentru cele epuizate
-$sql = 'SELECT p.id, p.nume, p.pret, p.gramaj, p.imagine, p.stoc, c.nume AS categorie
-          FROM produse p
-          JOIN categorii c ON c.id = p.categorie_id
-         WHERE p.activ = 1';
+// Interogarea interioară aduce produsele + procentul promoției active (SQL_PROMOTIE).
+// Cea exterioară calculează prețul final, ca să putem ordona după el.
+$filtru = '';
 $parametri = [];
 if ($categorie) {
-    $sql .= ' AND p.categorie_id = :categorie';
+    $filtru = ' AND p.categorie_id = :categorie';
     $parametri['categorie'] = $categorie['id'];
 }
-$sql .= ' ORDER BY (p.stoc = 0), ' . $ordonari[$ordonare]['sql'];
+$sql = 'SELECT p.*, ROUND(p.pret * (100 - COALESCE(p.procent_promo, 0)) / 100, 2) AS pret_final
+          FROM (SELECT p.id, p.nume, p.pret, p.gramaj, p.imagine, p.stoc,
+                       c.nume AS categorie, ' . SQL_PROMOTIE . '
+                  FROM produse p
+                  JOIN categorii c ON c.id = p.categorie_id
+                 WHERE p.activ = 1' . $filtru . ') AS p
+         ORDER BY (p.stoc = 0), ' . $ordonari[$ordonare]['sql'] . ', p.id';
+// (p.stoc = 0) este 0 pentru produsele în stoc și 1 pentru cele epuizate → epuizatele la final
 
 $stmt = db()->prepare($sql);
 $stmt->execute($parametri);

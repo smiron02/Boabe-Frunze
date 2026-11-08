@@ -13,6 +13,11 @@ document.addEventListener('DOMContentLoaded', function () {
         camp.addEventListener('change', function () { camp.form.submit(); });
     });
 
+    // Butoanele <button data-tipareste> deschid dialogul de tipărire (factura)
+    document.querySelectorAll('[data-tipareste]').forEach(function (b) {
+        b.addEventListener('click', function () { window.print(); });
+    });
+
     var buton = document.querySelector('.meniu-buton');
     var meniu = document.getElementById('meniu-principal');
     if (!buton || !meniu) return;

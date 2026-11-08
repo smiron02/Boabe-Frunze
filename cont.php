@@ -14,11 +14,12 @@ $profil = $stmt->fetch();
 
 // Istoricul comenzilor, cele mai noi primele. SUM(cantitate) = numărul de bucăți.
 $stmt = db()->prepare(
-    'SELECT c.id, c.data, c.total, c.status, SUM(cp.cantitate) AS nr_produse
+    'SELECT c.id, c.data, c.total, c.status, SUM(cp.cantitate) AS nr_produse, f.serie_numar
        FROM comenzi c
        JOIN comenzi_produse cp ON cp.comanda_id = c.id
+       LEFT JOIN facturi f ON f.comanda_id = c.id
       WHERE c.utilizator_id = :id
-      GROUP BY c.id
+      GROUP BY c.id, f.serie_numar
       ORDER BY c.data DESC, c.id DESC'
 );
 $stmt->execute(['id' => $utilizator['id']]);
@@ -47,7 +48,7 @@ require __DIR__ . '/includes/header.php';
     <?php else: ?>
         <table class="tabel-simplu">
             <thead>
-                <tr><th scope="col">Nr.</th><th scope="col">Data</th><th scope="col">Produse</th><th scope="col">Total</th><th scope="col">Status</th></tr>
+                <tr><th scope="col">Nr.</th><th scope="col">Data</th><th scope="col">Produse</th><th scope="col">Total</th><th scope="col">Status</th><th scope="col">Factură</th></tr>
             </thead>
             <tbody>
             <?php foreach ($comenzi as $c): ?>
@@ -57,6 +58,11 @@ require __DIR__ . '/includes/header.php';
                     <td><?= (int)$c['nr_produse'] ?></td>
                     <td><?= e(formatPret((float)$c['total'])) ?></td>
                     <td><span class="status status--<?= e($c['status']) ?>"><?= e(etichetaStatus($c['status'])) ?></span></td>
+                    <td>
+                        <?php if ($c['serie_numar']): ?>
+                            <a href="<?= e(url('factura.php?comanda=' . $c['id'])) ?>"><?= e($c['serie_numar']) ?></a>
+                        <?php else: ?>—<?php endif; ?>
+                    </td>
                 </tr>
             <?php endforeach; ?>
             </tbody>

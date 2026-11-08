@@ -16,7 +16,8 @@ if (!$id) {
 // iar atunci coloanele a.* vin NULL (produsul se afișează totuși).
 $stmt = db()->prepare(
     'SELECT p.*, c.nume AS categorie, c.id AS categorie_id,
-            a.intensitate, a.origine, a.prajire, a.acid, a.amar, a.aparat
+            a.intensitate, a.origine, a.prajire, a.acid, a.amar, a.aparat,
+            ' . SQL_PROMOTIE . '
        FROM produse p
        JOIN categorii c ON c.id = p.categorie_id
        LEFT JOIN atribute_cafea a ON a.produs_id = p.id
@@ -30,6 +31,7 @@ if (!$produs) {
 }
 
 $stoc     = (int)$produs['stoc'];
+$procent  = $produs['procent_promo'] !== null ? (int)$produs['procent_promo'] : null;
 $eCafea   = $produs['intensitate'] !== null;
 $aparate  = ['filtru' => 'Filtru / V60', 'espresso' => 'Espressor', 'ibric' => 'Ibric'];
 
@@ -73,8 +75,17 @@ require __DIR__ . '/includes/header.php';
             <p class="produs-detalii__gramaj"><?= e($produs['gramaj']) ?></p>
         <?php endif; ?>
 
-        <p class="produs-detalii__pret"><?= e(formatPret((float)$produs['pret'])) ?></p>
-        <p class="nota">Prețul include TVA.</p>
+        <?php if ($procent): ?>
+            <p class="produs-detalii__pret">
+                <span class="pret-redus"><?= e(formatPret(pretFinal((float)$produs['pret'], $procent))) ?></span>
+                <del class="pret-vechi"><span class="vizual-ascuns">Preț vechi: </span><?= e(formatPret((float)$produs['pret'])) ?></del>
+                <span class="insigna-reducere insigna-reducere--inline">−<?= $procent ?>%</span>
+            </p>
+            <p class="nota">Prețul include TVA. Promoție valabilă până la <?= e(date('d.m.Y', strtotime($produs['promo_pana_la']))) ?> inclusiv.</p>
+        <?php else: ?>
+            <p class="produs-detalii__pret"><?= e(formatPret((float)$produs['pret'])) ?></p>
+            <p class="nota">Prețul include TVA.</p>
+        <?php endif; ?>
 
         <!-- Starea stocului -->
         <?php if ($stoc === 0): ?>

@@ -59,6 +59,33 @@ function activ(string $pagina, string $paginaCurenta): string
     return $pagina === $paginaCurenta ? ' aria-current="page"' : '';
 }
 
+// ---------------------------------------------------------------
+// Promoții
+// ---------------------------------------------------------------
+
+/**
+ * Fragment SQL (scris de noi, fără date de la utilizator) care adaugă la un
+ * SELECT pe tabelul `produse p` două coloane:
+ *   procent_promo  — cea mai mare reducere ACTIVĂ AZI (NULL dacă nu există)
+ *   promo_pana_la  — ultima zi a acelei promoții
+ * O promoție e activă dacă CURDATE() BETWEEN data_start AND data_end.
+ */
+const SQL_PROMOTIE = "
+    (SELECT MAX(pr.procent) FROM promotii pr
+      WHERE pr.produs_id = p.id AND CURDATE() BETWEEN pr.data_start AND pr.data_end) AS procent_promo,
+    (SELECT pr.data_end FROM promotii pr
+      WHERE pr.produs_id = p.id AND CURDATE() BETWEEN pr.data_start AND pr.data_end
+      ORDER BY pr.procent DESC, pr.data_end DESC LIMIT 1) AS promo_pana_la";
+
+/**
+ * Prețul final după aplicarea reducerii procentuale (rotunjit la bani).
+ * Exemplu: pretFinal(49.90, 15) = 42.42
+ */
+function pretFinal(float $pret, ?int $procent): float
+{
+    return $procent ? round($pret * (100 - $procent) / 100, 2) : $pret;
+}
+
 /**
  * Conținutul coșului, cu date PROASPETE din baza de date.
  *
@@ -86,7 +113,7 @@ function continutCos(): array
     $semne = implode(',', array_fill(0, count($iduri), '?'));
     $stmt = db()->prepare(
         "SELECT p.id, p.nume, p.pret, p.gramaj, p.imagine, p.stoc, p.activ,
-                c.nume AS categorie, c.cota_tva
+                c.nume AS categorie, c.cota_tva, " . SQL_PROMOTIE . "
            FROM produse p JOIN categorii c ON c.id = p.categorie_id
           WHERE p.id IN ($semne)"
     );
@@ -102,7 +129,8 @@ function continutCos(): array
             continue;
         }
         $p = $produse[$id];
-        $pret = (float)$p['pret'];          // în etapa 7: prețul cu promoție
+        // Prețul final = prețul din catalog minus promoția activă (dacă există)
+        $pret = pretFinal((float)$p['pret'], $p['procent_promo'] !== null ? (int)$p['procent_promo'] : null);
         $stoc = (int)$p['stoc'];
 
         $problema = null;

@@ -136,7 +136,14 @@ require __DIR__ . '/includes/header.php';
                         </div>
                     </div>
                 </td>
-                <td data-eticheta="Preț unitar"><?= e(formatPret($linie['pret_unitar'])) ?></td>
+                <td data-eticheta="Preț unitar">
+                    <?php if ($linie['procent_promo'] !== null): ?>
+                        <del class="pret-vechi"><span class="vizual-ascuns">Preț vechi: </span><?= e(formatPret((float)$linie['pret'])) ?></del><br>
+                        <span class="pret-redus"><?= e(formatPret($linie['pret_unitar'])) ?></span>
+                    <?php else: ?>
+                        <?= e(formatPret($linie['pret_unitar'])) ?>
+                    <?php endif; ?>
+                </td>
                 <td data-eticheta="Cantitate">
                     <!-- Un formular mic pe fiecare rând: modifică doar acest produs -->
                     <form class="cos-cantitate" method="post" action="<?= e(url('cos.php')) ?>">
