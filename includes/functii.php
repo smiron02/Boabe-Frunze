@@ -41,7 +41,10 @@ function asset(string $cale): string
  * Pornește sesiunea (o singură dată) cu setări sigure pentru cookie:
  *  - httponly: cookie-ul nu poate fi citit din JavaScript
  *  - samesite=Lax: cookie-ul nu se trimite la cereri POST venite de pe alte site-uri
- *  - secure: doar prin HTTPS, când site-ul rulează pe HTTPS
+ *  - secure: doar prin HTTPS, când site-ul rulează pe HTTPS. Decidem după
+ *    URL_BAZA din config.php, NU după $_SERVER['HTTPS']: pe unele găzduiri
+ *    (proxy în față) serverul raportează HTTPS chiar și pentru pagini http://,
+ *    iar atunci browserul ar refuza cookie-ul și sesiunea s-ar pierde.
  */
 function pornesteSesiunea(): void
 {
@@ -49,7 +52,7 @@ function pornesteSesiunea(): void
         session_start([
             'cookie_httponly' => true,
             'cookie_samesite' => 'Lax',
-            'cookie_secure'   => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+            'cookie_secure'   => str_starts_with(URL_BAZA, 'https://'),
         ]);
     }
 }
