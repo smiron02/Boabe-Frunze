@@ -25,6 +25,19 @@ function url(string $cale = ''): string
 }
 
 /**
+ * Link către un fișier static (CSS/JS/imagine) cu „versiune” în adresă:
+ * asset('assets/css/style.css') → .../style.css?v=1731012345
+ * Numărul este data ultimei modificări a fișierului. Browserul păstrează
+ * fișierul în cache un an (.htaccess), dar când îl modificăm, adresa se
+ * schimbă și browserul descarcă automat varianta nouă („cache busting”).
+ */
+function asset(string $cale): string
+{
+    $fisier = __DIR__ . '/../' . $cale;
+    return url($cale) . (is_file($fisier) ? '?v=' . filemtime($fisier) : '');
+}
+
+/**
  * Pornește sesiunea (o singură dată) cu setări sigure pentru cookie:
  *  - httponly: cookie-ul nu poate fi citit din JavaScript
  *  - samesite=Lax: cookie-ul nu se trimite la cereri POST venite de pe alte site-uri

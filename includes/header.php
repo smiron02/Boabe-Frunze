@@ -26,9 +26,9 @@ $nrCos = numarProduseCos();
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= e($titluComplet) ?></title>
     <meta name="description" content="<?= e($descriere) ?>">
-    <link rel="stylesheet" href="<?= e(url('assets/css/style.css')) ?>">
-    <link rel="icon" href="<?= e(url('assets/img/favicon.svg')) ?>" type="image/svg+xml">
-    <script src="<?= e(url('assets/js/main.js')) ?>" defer></script>
+    <link rel="stylesheet" href="<?= e(asset('assets/css/style.css')) ?>">
+    <link rel="icon" href="<?= e(asset('assets/img/favicon.svg')) ?>" type="image/svg+xml">
+    <script src="<?= e(asset('assets/js/main.js')) ?>" defer></script>
 </head>
 <body>
 <a class="sari-la-continut" href="#continut">Sari la conținut</a>

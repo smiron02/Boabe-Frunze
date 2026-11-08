@@ -106,8 +106,11 @@ require __DIR__ . '/includes/header.php';
 <p class="rezultate"><?= count($produse) ?> <?= count($produse) === 1 ? 'produs' : 'produse' ?></p>
 
 <?php if ($produse): ?>
+    <!-- Titlu pentru cititoarele de ecran: ordinea h1 → h2 → h3 (cardurile) -->
+    <h2 class="vizual-ascuns">Produse</h2>
     <div class="produse-grila">
-        <?php foreach ($produse as $produs): ?>
+        <?php foreach ($produse as $i => $produs): ?>
+            <?php $incarcareImediata = $i < 4;   // primul rând de produse ?>
             <?php require __DIR__ . '/includes/card_produs.php'; ?>
         <?php endforeach; ?>
     </div>

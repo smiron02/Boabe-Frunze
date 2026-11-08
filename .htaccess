@@ -1,0 +1,67 @@
+# =====================================================================
+# Boabe & Frunze — configurarea Apache (XAMPP / găzduire)
+# Fiecare bloc <IfModule> se aplică doar dacă modulul există pe server,
+# deci fișierul nu produce erori pe o găzduire cu alte module activate.
+# =====================================================================
+
+DirectoryIndex index.php
+
+# Nu se afișează lista de fișiere a unui folder fără index
+Options -Indexes
+
+# ---------------------------------------------------------------------
+# 1. SECURITATE: blocăm accesul direct la folderele și fișierele interne
+#    (cod inclus, export SQL, biblioteci Composer, documentație).
+#    Răspundem cu 404, ca și cum n-ar exista.
+# ---------------------------------------------------------------------
+RedirectMatch 404 "/(includes|sql|vendor|docs|\.git)(/|$)"
+
+<FilesMatch "(^\.|\.(sql|md|lock|log|ini|sh)$|^composer\.json$)">
+    Require all denied
+</FilesMatch>
+
+# ---------------------------------------------------------------------
+# 2. COMPRESIE: textul (HTML, CSS, JS, SVG) se trimite comprimat gzip
+#    → pagini de câteva ori mai mici (PageSpeed: „Enable text compression”)
+# ---------------------------------------------------------------------
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml
+    AddOutputFilterByType DEFLATE application/javascript text/javascript application/json
+    AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+# ---------------------------------------------------------------------
+# 3. CACHE: browserul păstrează CSS, JS și imaginile un an
+#    (PageSpeed: „Serve static assets with an efficient cache policy”).
+#    La modificarea style.css / main.js, header.php adaugă ?v=<data
+#    fișierului> în adresă, deci browserul descarcă automat versiunea nouă.
+#    Paginile PHP NU se păstrează în cache (conțin coșul, contul etc.).
+# ---------------------------------------------------------------------
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault                          "access plus 0 seconds"
+    ExpiresByType text/css                  "access plus 1 year"
+    ExpiresByType application/javascript    "access plus 1 year"
+    ExpiresByType text/javascript           "access plus 1 year"
+    ExpiresByType image/webp                "access plus 1 year"
+    ExpiresByType image/jpeg                "access plus 1 year"
+    ExpiresByType image/png                 "access plus 1 year"
+    ExpiresByType image/svg+xml             "access plus 1 year"
+    ExpiresByType image/x-icon              "access plus 1 year"
+</IfModule>
+
+# ---------------------------------------------------------------------
+# 4. ANTETE DE SECURITATE
+# ---------------------------------------------------------------------
+<IfModule mod_headers.c>
+    # Browserul nu „ghicește” tipul fișierelor (ex.: un .jpg tratat ca script)
+    Header always set X-Content-Type-Options "nosniff"
+    # Site-ul nu poate fi încadrat într-un <iframe> pe alt domeniu (clickjacking)
+    Header always set X-Frame-Options "SAMEORIGIN"
+    # Către alte site-uri se trimite doar domeniul, nu adresa completă
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    # Fișierele statice pot fi păstrate în cache (fișierele cu ?v= nu se schimbă)
+    <FilesMatch "\.(css|js|webp|jpe?g|png|svg|ico)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+</IfModule>

@@ -3,6 +3,8 @@
  * Cardul unui produs din liste (pagina de start, catalog).
  * Se include într-un foreach care definește $produs cu cheile:
  *   id, nume, pret, gramaj, imagine, stoc, categorie, procent_promo (din SQL_PROMOTIE)
+ * Opțional: $incarcareImediata = true pentru primele carduri, vizibile fără
+ * derulare — imaginea lor se încarcă imediat, nu „lazy” (PageSpeed: LCP).
  */
 $linkProdus = url('produs.php?id=' . (int)$produs['id']);
 $procent    = $produs['procent_promo'] !== null ? (int)$produs['procent_promo'] : null;
@@ -12,7 +14,7 @@ $procent    = $produs['procent_promo'] !== null ? (int)$produs['procent_promo'] 
     <a class="produs-card__imagine" href="<?= e($linkProdus) ?>" tabindex="-1" aria-hidden="true">
         <?php if ($procent): ?><span class="insigna-reducere">−<?= $procent ?>%</span><?php endif; ?>
         <img src="<?= e(imagineProdus($produs['imagine'])) ?>" alt=""
-             width="400" height="400" loading="lazy">
+             width="400" height="400" loading="<?= empty($incarcareImediata) ? 'lazy' : 'eager' ?>">
     </a>
     <div class="produs-card__corp">
         <span class="produs-card__categorie"><?= e($produs['categorie']) ?></span>

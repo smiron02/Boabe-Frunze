@@ -44,5 +44,6 @@ define('STRIPE_CHEIE_SECRETA', 'sk_test_...');
 
 // ---------------------------------------------------------------
 // Mediu: true = afișează erorile (doar local!), false = pe server
+// LA PUBLICARE pune false: un mesaj de eroare poate dezvălui căi și date interne.
 // ---------------------------------------------------------------
 define('MOD_DEZVOLTARE', true);
